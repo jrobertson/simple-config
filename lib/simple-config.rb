@@ -1,25 +1,62 @@
-#!/usr/bin/env ruby[4~
+#!/usr/bin/env ruby
 
 # file: simple-config.rb
 
 require 'line-tree'
 
 class SimpleConfig
+  
+  attr_reader :to_h, :to_s
+  
+  def initialize(x=nil)    
+    m = {:String => :scan_to_h, :Hash => :scan_to_s}
+    method(m[x.class.to_s.to_sym]).call(x) if x
+  end
+  
+  def parse(t=nil)
+    scan_to_h(t || @to_s)
+  end  
+                        
+  def write(h=nil)
+    scan_to_s h || @to_h
+  end
+     
+  private
 
-  def self.parse(txt)
-
-    raw_a = LineTree.new(txt.gsub(/^-*$/m,'')).to_a
+  def scan_to_h(txt)
+    
+    raw_a = LineTree.new(txt.gsub(/(^-*$)|(#.*)/,'').strip).to_a
 
     a = raw_a.map do |line|
 
-      s = line.is_a?(Array) ? line[0] : line
-      value, name = s.split(':',2).reverse
-      name ||= 'description'
-        
-      [name.to_sym, value.to_s.strip]
+      s = line.shift
+
+      if line.any? then 
+        r = scan_to_h(line.join("\n"))
+        [s[/[^:]+/].to_sym, r]
+      else
+        value, name = s.split(':',2).reverse
+        name ||= 'description'
+          
+        [name.to_sym, value.to_s.strip]
+      end
 
     end
 
-    Hash[a]
+    @to_h = Hash[a]
+  end   
+
+  def scan_to_s(h, indent='')
+
+    a = h.inject([]) do |r, x|
+      if x.last.is_a? Hash then
+        r << x.first.to_s + ":\n" + scan_to_s(x.last, '  ')
+      else
+        r << "%s%s: %s" % [indent, *x]
+      end
+    end
+    
+    @to_s = a.join("\n")
   end
+
 end
