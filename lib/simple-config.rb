@@ -3,6 +3,8 @@
 # file: simple-config.rb
 
 require 'line-tree'
+require 'rxfhelper'
+
 
 class SimpleConfig
   
@@ -23,8 +25,10 @@ class SimpleConfig
      
   private
 
-  def scan_to_h(txt)
+  def scan_to_h(raw_txt)
     
+    txt, _ = RXFHelper.read(raw_txt)
+
     raw_a = LineTree.new(txt.gsub(/(^-*$)|(#.*)/,'').strip).to_a
 
     a = raw_a.map do |line|
