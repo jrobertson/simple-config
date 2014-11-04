@@ -36,12 +36,15 @@ class SimpleConfig
       s = line.shift
 
       if line.any? then 
+        
         r = scan_to_h(line.join("\n"))
         [s[/[^:]+/].to_sym, r]
+        
       else
+        
         value, name = s.split(':',2).reverse
-        name ||= 'description'
-          
+        name ||= 'description'          
+        
         [name.to_sym, value.to_s.strip]
       end
 

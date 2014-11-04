@@ -6,6 +6,16 @@ require 'line-tree'
 require 'rxfhelper'
 
 
+#!/usr/bin/env ruby
+
+# file: simple-config.rb
+
+require 'line-tree'
+require 'requestor'
+
+eval Requestor.read('http://rorbuilder.info/r/ruby'){|x| x.require 'rxfhelper'}
+
+
 class SimpleConfig
   
   attr_reader :to_h, :to_s
@@ -42,7 +52,7 @@ class SimpleConfig
         
       else
         
-        value, name = s.split(':',2).reverse
+        value, name = s.split(': ',2).reverse
         name ||= 'description'          
         
         [name.to_sym, value.to_s.strip]
