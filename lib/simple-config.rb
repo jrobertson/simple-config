@@ -47,7 +47,11 @@ class SimpleConfig
 
     end
 
-    @to_h = Hash[a]
+    if a.count {|x| x.first  == :description } > 1 then
+      return a.map(&:last)
+    else
+      @to_h = Hash[a]
+    end
   end   
 
   def scan_to_s(h, indent='')
