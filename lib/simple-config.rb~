@@ -59,9 +59,11 @@ class SimpleConfig
       end
 
     end
-
-    if a.count {|x| x.first  == :description } > 1 then
-      return a.map(&:last)
+    
+    anonymous_items, remaining = a.partition {|x| x.first  == :description }
+    
+    if anonymous_items.any? then
+      return {items: anonymous_items.map(&:last)}.merge(Hash[remaining])
     else
       @to_h = Hash[a]
     end
