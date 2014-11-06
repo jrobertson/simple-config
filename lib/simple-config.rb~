@@ -6,16 +6,6 @@ require 'line-tree'
 require 'rxfhelper'
 
 
-#!/usr/bin/env ruby
-
-# file: simple-config.rb
-
-require 'line-tree'
-require 'requestor'
-
-eval Requestor.read('http://rorbuilder.info/r/ruby'){|x| x.require 'rxfhelper'}
-
-
 class SimpleConfig
   
   attr_reader :to_h, :to_s
@@ -35,38 +25,53 @@ class SimpleConfig
      
   private
 
+  
+  def pretty_print(a, indent='')
+    
+    a.map {|x|  x.is_a?(String) ? x : pretty_print(x, indent + '  ')}\
+                                                          .join("\n" + indent)
+  end
+  
+  
   def scan_to_h(raw_txt)
     
     txt, _ = RXFHelper.read(raw_txt)
-
     raw_a = LineTree.new(txt.gsub(/(^-*$)|(#.*)/,'').strip).to_a
 
-    a = raw_a.map do |line|
+    @to_h = raw_a.inject({}) do |r, line|
 
       s = line.shift
 
       if line.any? then 
-        
-        r = scan_to_h(line.join("\n"))
-        [s[/[^:]+/].to_sym, r]
+                
+        r2 = if line[0][0][/^\w+:/] then
+          scan_to_h(line.join("\n"))
+        else
+
+          desc = pretty_print(line).split(/\n(?=\w+:)/)         
+          txt, remaining = desc
+
+          r3 = {description: txt, items: txt.lines.map(&:chomp)}
+
+          if remaining then
+            r3.merge!(scan_to_h remaining + "\n ")
+          end
+          
+          r3
+        end
+
+        r.merge({s[/[^:]+/].to_sym => r2})
         
       else
         
         value, name = s.split(': ',2).reverse
         name ||= 'description'          
         
-        [name.to_sym, value.to_s.strip]
-      end
+        r.merge({name.to_sym => value.to_s})
+      end     
 
     end
-    
-    anonymous_items, remaining = a.partition {|x| x.first  == :description }
-    
-    if anonymous_items.any? then
-      return {items: anonymous_items.map(&:last)}.merge(Hash[remaining])
-    else
-      @to_h = Hash[a]
-    end
+
   end   
 
   def scan_to_s(h, indent='')
