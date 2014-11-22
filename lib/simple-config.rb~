@@ -11,6 +11,7 @@ class SimpleConfig
   attr_reader :to_h, :to_s
   
   def initialize(x=nil)    
+
     m = {:String => :scan_to_h, :Hash => :scan_to_s}
     method(m[x.class.to_s.to_sym]).call(x) if x
   end
@@ -44,14 +45,22 @@ class SimpleConfig
 
       if line.any? then 
                 
-        r2 = if line[0][0][/^\w+:/] then
+        r2 = if line[0][0][/^\w+: /] then
+        
           scan_to_h(line.join("\n"))
+          
         else
 
-          desc = pretty_print(line).split(/\n(?=\w+:)/)         
-          txt, remaining = desc
+          desc = pretty_print(line).split(/\n(?=\w+: )/)         
 
-          r3 = {description: txt, items: txt.lines.map(&:chomp)}
+          txt2, remaining = desc
+          
+          h = txt2.lines.inject([]) do |r, x| 
+            x.chomp!
+            x.length > 0 ?  r << x : r
+          end
+          
+          r3 = {description: txt2, items: h}
 
           if remaining then
             r3.merge!(scan_to_h remaining + "\n ")
