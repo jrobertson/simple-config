@@ -12,12 +12,12 @@ class SimpleConfig
   
   def initialize(x=nil)    
 
-    m = {:String => :scan_to_h, :Hash => :scan_to_s}
+    m = {:String => :parse_to_h, :Hash => :scan_to_s}
     method(m[x.class.to_s.to_sym]).call(x) if x
   end
   
   def parse(t=nil)
-    scan_to_h(t || @to_s)
+    parse_to_h(t || @to_s)
   end  
                         
   def write(h=nil)
@@ -26,6 +26,10 @@ class SimpleConfig
      
   private
 
+  def parse_to_h(s)
+    txt, _ = RXFHelper.read(s)
+    scan_to_h(txt)
+  end
   
   def pretty_print(a, indent='')
     
@@ -34,9 +38,8 @@ class SimpleConfig
   end
   
   
-  def scan_to_h(raw_txt)
+  def scan_to_h(txt)
     
-    txt, _ = RXFHelper.read(raw_txt)
     raw_a = LineTree.new(txt.gsub(/(^-*$)|(#.*)/,'').strip).to_a
 
     @to_h = raw_a.inject({}) do |r, line|
