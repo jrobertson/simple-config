@@ -33,21 +33,34 @@ class SimpleConfig
   
   def pretty_print(a, indent='')
     
-    a.map {|x|  x.is_a?(String) ? x : pretty_print(x, indent + '  ')}\
+    a.map {|x|  (x.is_a?(String) or x.nil?) ? x.to_s : pretty_print(x, indent + '  ')}\
                                                           .join("\n" + indent)
   end
   
   
   def scan_to_h(txt)
-    
-    raw_a = LineTree.new(txt.gsub(/(^-*$)|(#.*)/,'').strip).to_a
 
-    @to_h = raw_a.inject({}) do |r, line|
+    raw_a = LineTree.new(txt.gsub(/(^-*$)|(#.*)/,'').strip).to_a    
+    
+    # if there are any orphan lines which aren't nested underneath a 
+    #   label, they will be fixed using the following statement
+    
+    a = raw_a.chunk {|x| x[0][/^\w+:|.*/]}.inject([]) do |r,y|
+      if r.last and !y.first[/\w+:/] then
+        r.last << y.last[-1]
+      else
+        r << y.last[-1]
+      end
+      r
+    end
+    
+
+    @to_h = a.inject({}) do |r, line|
 
       s = line.shift
 
       if line.any? then 
-                
+
         r2 = if line[0][0][/^\w+: /] then
         
           scan_to_h(line.join("\n"))

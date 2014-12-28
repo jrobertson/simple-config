@@ -40,7 +40,8 @@ class SimpleConfig
   
   def scan_to_h(txt)
 
-    raw_a = LineTree.new(txt.gsub(/(^-*$)|(#.*)/,'').strip).to_a    
+    raw_a = LineTree.new(txt.gsub(/(^-*$)|(#.*)/,'').strip, 
+                                              ignore_blank_lines: false).to_a
     
     # if there are any orphan lines which aren't nested underneath a 
     #   label, they will be fixed using the following statement
