@@ -12,7 +12,7 @@ class SimpleConfig
   
   def initialize(x=nil)    
 
-    m = {:String => :parse_to_h, :Hash => :scan_to_s}
+    m = {:String => :parse_to_h, :Hash => :write}
     method(m[x.class.to_s.to_sym]).call(x) if x
   end
   
@@ -21,7 +21,8 @@ class SimpleConfig
   end  
                         
   def write(h=nil)
-    scan_to_s h || @to_h
+    @to_h = h || @to_h
+    scan_to_s @to_h
   end
      
   private
@@ -100,8 +101,8 @@ class SimpleConfig
 
   end   
 
-  def scan_to_s(h, indent='')
-
+  def scan_to_s(h, indent='')    
+    
     a = h.inject([]) do |r, x|
       if x.last.is_a? Hash then
         r << x.first.to_s + ":\n" + scan_to_s(x.last, '  ')
