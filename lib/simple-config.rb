@@ -58,10 +58,11 @@ class SimpleConfig
     
 
     @to_h = a.inject({}) do |r, line|
-
+           
       s = line.shift
+      
 
-      if line.any? then 
+      if line.join.length > 0 then 
 
         r2 = if line[0][0][/^\w+: /] then
         
@@ -72,7 +73,7 @@ class SimpleConfig
           desc = pretty_print(line).split(/\n(?=\w+: )/)         
 
           txt2, remaining = desc
-          
+
           h = txt2.lines.inject([]) do |r, x| 
             x.chomp!
             x.length > 0 ?  r << x : r
@@ -97,7 +98,7 @@ class SimpleConfig
         r.merge({name.to_sym => value.to_s})
       end     
 
-    end
+    end    
 
   end   
 
