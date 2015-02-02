@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
   s.name = 'simple-config'
-  s.version = '0.2.1'
+  s.version = '0.3.0'
   s.summary = 'simple-config'
   s.authors = ['James Robertson']
   s.files = Dir['lib/**/*.rb']
-  s.add_runtime_dependency('line-tree', '~> 0.4', '>=0.4.5') 
+  s.add_runtime_dependency('line-tree', '~> 0.5', '>=0.5.0') 
   s.signing_key = '../privatekeys/simple-config.pem'
   s.cert_chain  = ['gem-public_cert.pem']
   s.license = 'MIT'
