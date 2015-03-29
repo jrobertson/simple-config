@@ -12,7 +12,7 @@ class SimpleConfig
   
   def initialize(x=nil)    
 
-    m = {:String => :parse_to_h, :Hash => :write}
+    m = {:String => :parse_to_h, :Hash => :write, :SimpleConfig => :passthru}
     method(m[x.class.to_s.to_sym]).call(x) if x
   end
   
@@ -28,8 +28,13 @@ class SimpleConfig
   private
 
   def parse_to_h(s)
+
     txt, _ = RXFHelper.read(s)
     scan_to_h(txt)
+  end
+  
+  def passthru(x)
+    initialize x.to_h
   end
   
   def pretty_print(a, indent='')
@@ -65,7 +70,7 @@ class SimpleConfig
       if line.join.length > 0 then 
 
         r2 = if line[0][0][/^\w+: /] then
-        
+
           scan_to_h(line.join("\n"))
           
         else
@@ -82,6 +87,7 @@ class SimpleConfig
           r3 = {description: txt2, items: h}
 
           if remaining then
+
             r3.merge!(scan_to_h remaining + "\n ")
           end
           

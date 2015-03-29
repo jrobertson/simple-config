@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'simple-config'
-  s.version = '0.3.0'
+  s.version = '0.3.1'
   s.summary = 'simple-config'
   s.authors = ['James Robertson']
   s.files = Dir['lib/**/*.rb']
