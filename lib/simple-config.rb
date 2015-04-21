@@ -38,11 +38,27 @@ class SimpleConfig
 
   end
   
-  def to_xml()
-    
+  def to_xml(options={pretty: true})
+  
+    make_xml(@to_h)
+        
+    attributes = @type ? {type: @type} : {}
+    a = ['simpleconfig', attributes, '', *make_xml(@to_h)]
+    Rexle.new(a).xml(options)
+
   end
      
   private
+  
+  def make_xml(h)
+
+    h.map do |name, x|
+
+      value = x.is_a?(Hash) ? make_xml(x) : x
+      [name, {}, *value]
+    end
+  end
+  
 
   def parse_to_h(s)
 

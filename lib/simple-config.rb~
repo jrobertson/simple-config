@@ -12,6 +12,7 @@ class SimpleConfig
   
   def initialize(x=nil)    
 
+    @header = false
     m = {:String => :parse_to_h, :Hash => :write, :SimpleConfig => :passthru}
     method(m[x.class.to_s.to_sym]).call(x) if x
   end
@@ -20,16 +21,45 @@ class SimpleConfig
     parse_to_h(t || @to_s)
   end  
                         
-  def write(h=nil)
+  def write(h=nil, header: @header)
+    
     @to_h = h || @to_h
-    scan_to_s @to_h
+
+    header = ''
+    
+    if @header then
+      
+      header = '<?simple-config'
+      header += ' ' + @type if @type
+      header += "?>\n"
+    end
+    
+    @to_s = header + scan_to_s(@to_h)
+
+  end
+  
+  def to_xml()
+    
   end
      
   private
 
   def parse_to_h(s)
 
-    txt, _ = RXFHelper.read(s)
+    raw_txt, _ = RXFHelper.read(s)
+    
+    # does the raw_txt contain header information? 
+    a = s.strip.lines
+    
+    txt = if a[0][/^<\?simple-?config /] then
+      raw_header = a.shift 
+      @type = raw_header[/type=["']([^"']+)/,1]
+      @header = true
+      a.join
+    else
+      raw_txt
+    end
+    
     scan_to_h(txt)
   end
   
