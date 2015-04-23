@@ -10,10 +10,12 @@ class SimpleConfig
   
   attr_reader :to_h, :to_s
   
-  def initialize(x=nil)    
+  def initialize(x=nil, attributes: {})    
 
     @header = false
+    @attributes = attributes
     m = {:String => :parse_to_h, :Hash => :write, :SimpleConfig => :passthru}
+    
     method(m[x.class.to_s.to_sym]).call(x) if x
   end
   
@@ -30,7 +32,7 @@ class SimpleConfig
     if @header then
       
       header = '<?simple-config'
-      header += ' ' + @type if @type
+      header += ' ' + @attributes.map {|x| "%s='%s'" % x }.join(' ')
       header += "?>\n"
     end
     
@@ -42,8 +44,7 @@ class SimpleConfig
   
     make_xml(@to_h)
         
-    attributes = @type ? {type: @type} : {}
-    a = ['simpleconfig', attributes, '', *make_xml(@to_h)]
+    a = ['simpleconfig', @attributes, '', *make_xml(@to_h)]
     Rexle.new(a).xml(options)
 
   end
@@ -69,7 +70,7 @@ class SimpleConfig
     
     txt = if a[0][/^<\?simple-?config /] then
       raw_header = a.shift 
-      @type = raw_header[/type=["']([^"']+)/,1]
+      @attributes.merge! type:  raw_header[/type=["']([^"']+)/,1]
       @header = true
       a.join
     else
