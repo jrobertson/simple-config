@@ -1,4 +1,4 @@
-#Introducing the simple-config gem
+Introducing the Simple-config gem
 
     require 'simple-config'
 
@@ -7,16 +7,19 @@
     description: xyx 123
     EOF
 
-    SimpleConfig.parse txt
-    #=> {:file_path=>"abc def", :description=>"xyx 123"}
+    sc = SimpleConfig.new(txt)
+    sc.to_h #=> {:file_path=>"abc def", :description=>"xyx 123"}
+    puts sc.write
 
-    puts SimpleConfig.write(file_path: 'abc/132', description: '11 22 33')
+Output:
 
-output:
-
-    file_path: abc/132
-    description: 11 22 33
+<pre>
+file_path: abc def
+description: xyx 123
+</pre>
 
 ## Resources
 
-* [jrobertson/simple-config Â· GitHub](https://github.com/jrobertson/simple-config)
+* ?simple-config https://rubygems.org/gems/simple-config?
+
+simpleconfig gem
