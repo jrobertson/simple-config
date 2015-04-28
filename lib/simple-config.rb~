@@ -9,13 +9,14 @@ class SimpleConfig < Kvx
   
   attr_reader :to_h, :to_s
   
-  def initialize(x=nil, attributes: {})    
+  def initialize(x, attributes: {})    
 
-    @header = false
-    @attributes = attributes
-    m = {:String => :parse_to_h, :Hash => :write, :SimpleConfig => :passthru}
+    if x.is_a? SimpleConfig then
+      @to_h = x.to_h
+    elsif x
+      super(x, attributes: attributes)
+    end
     
-    method(m[x.class.to_s.to_sym]).call(x) if x
   end
                           
   def write(h=nil, header: @header)
@@ -39,11 +40,7 @@ class SimpleConfig < Kvx
   
   def parse_to_h(s)
     super(s, header_pattern: %r(^<\?simple-?config ))
-  end
-    
-  def passthru(x)
-    initialize x.to_h
-  end  
+  end    
 
   def scan_to_s(h, indent='')    
     
