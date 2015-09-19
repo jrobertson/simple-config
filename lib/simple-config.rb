@@ -10,13 +10,13 @@ class SimpleConfig < Kvx
   
   def initialize(x, attributes: {})    
 
-    @identifier = 'simple-config'
-    
     if x.is_a? SimpleConfig then
       @to_h = x.to_h
     elsif x
       super(x, attributes: attributes)
     end
+    
+    @identifier = 'simple-config'    
     
   end
                           
