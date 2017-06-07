@@ -25,7 +25,7 @@ class SimpleConfig < Kvx
   private
   
   def parse_to_h(s)
-    super(s, header_pattern: %r(^<\?simple-?config ))
+    super(s, header_pattern: %r(^<\?simple-?config\s*))
   end    
 
 

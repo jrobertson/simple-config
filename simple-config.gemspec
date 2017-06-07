@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'simple-config'
-  s.version = '0.6.1'
+  s.version = '0.6.2'
   s.summary = 'Simple-config makes it convenient to read or write a config file as simple as possible'
   s.authors = ['James Robertson']
   s.files = Dir['lib/**/*.rb']
@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.signing_key = '../privatekeys/simple-config.pem'
   s.cert_chain  = ['gem-public_cert.pem']
   s.license = 'MIT'
-  s.email = 'james@r0bertson.co.uk'
+  s.email = 'james@jamesrobertson.eu'
   s.homepage = 'https://github.com/jrobertson/simple-config'
   s.required_ruby_version = '>= 2.1.2'
 end
