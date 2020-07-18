@@ -33,6 +33,8 @@ class SimpleConfig < Kvx
   end    
   
   def find_type(v)
+    
+    puts 'v: ' + v.inspect if @debug
 
     if v[/^\d+$/] and v.to_i.to_s.length == v.length then v.to_i
     elsif v[/^\d+\.\d+$/] and v.to_f.to_s.length == v.length then v.to_f
@@ -49,10 +51,10 @@ class SimpleConfig < Kvx
   def scan2type(h)
 
     h.each do |key, value|
+      next if value.is_a? Array
       h[key] = value.is_a?(Hash) ? scan2type(value) : find_type(value)
     end
 
   end  
-
 
 end

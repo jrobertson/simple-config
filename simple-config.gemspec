@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'simple-config'
-  s.version = '0.7.0'
+  s.version = '0.7.1'
   s.summary = 'Simple-config makes it convenient to read or write a ' + 
       'config file as simple as possible'
   s.authors = ['James Robertson']
