@@ -8,7 +8,8 @@ require 'kvx'
 class SimpleConfig < Kvx
   
   
-  def initialize(x, attributes: {}, auto_detect_type: true, debug: false)    
+  def initialize(x, attributes: {}, auto_detect_type: true, comment_char: '#', 
+                 debug: false)  
 
     @ignore_blank_lines = true
     @auto_detect_type = auto_detect_type
@@ -16,7 +17,7 @@ class SimpleConfig < Kvx
     if x.is_a? SimpleConfig then
       @to_h = x.to_h
     elsif x
-      super(x, attributes: attributes, debug: debug)
+      super(x, attributes: attributes, comment_char: comment_char, debug: debug)
     end
     
     @identifier = 'simple-config'    
